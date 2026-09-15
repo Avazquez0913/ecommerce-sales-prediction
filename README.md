@@ -24,17 +24,31 @@ Models are evaluated on **MAE**, **MSE**, **RMSE**, and **R²**.
 |---------|------|-------|
 | Date | datetime | Month extracted as feature |
 | Product_Category | categorical | Label-encoded |
-| Price | numeric | |
-| Discount | numeric | |
+| Price | numeric | Scaled |
+| Discount | numeric | Scaled |
 | Customer_Segment | categorical | Label-encoded |
-| Marketing_Spend | numeric | |
+| Marketing_Spend | numeric | Scaled |
 | Units_Sold | numeric | **Target variable** |
-| Revenue | numeric | Engineered: Price × Units_Sold |
+
+## Exploratory Data Analysis
+
+### Target Distribution
+The target variable (`Units_Sold`) follows an approximately normal distribution centered around 30 units:
+
+![Distribution of Units Sold](assets/units_sold_distribution.png)
+
+### Correlation Matrix
+Feature correlations evaluated prior to model training show minimal linear collinearity among predictor variables:
+
+![Correlation Matrix](assets/correlation_matrix.png)
 
 ## Project Structure
 
 ```
 ecommerce-sales-prediction/
+├── assets/
+│   ├── correlation_matrix.png
+│   └── units_sold_distribution.png
 ├── EcommerceSalesPrediction_Clean.ipynb   # Main notebook
 └── Ecommerce_Sales_Prediction_Dataset.csv # Dataset
 ```
@@ -57,13 +71,11 @@ ecommerce-sales-prediction/
 **Requirements:** Python 3, Jupyter Notebook
 
 Install dependencies:
-
 ```bash
 pip install pandas numpy matplotlib seaborn scikit-learn jupyter
 ```
 
 Run the notebook:
-
 ```bash
 jupyter notebook EcommerceSalesPrediction_Clean.ipynb
 ```
@@ -72,9 +84,9 @@ jupyter notebook EcommerceSalesPrediction_Clean.ipynb
 
 ## Key Findings
 
-- **Revenue** (Price × Units_Sold) and **Marketing_Spend** are the most influential features for predicting sales volume.
-- Proper data leakage prevention: the encoder and scaler are fit only on training data.
-- 80/20 train/test split with `random_state=42` for reproducibility.
+- Feature importances identified non-linear interactions across marketing investment and pricing tiers as the primary drivers of sales volume.
+- **Data Integrity:** `Revenue` was omitted from predictor features during modeling to avoid target leakage (`Revenue = Price × Units_Sold`).
+- Encoders and scalers were fit strictly on training splits to prevent lookahead bias (80/20 train/test split with `random_state=42` for reproducibility).
 
 ## Author
 
